@@ -109,27 +109,30 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 		$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
 		$storeName = $storeManager->getStore()->getName();
+		$storeCode = $storeManager->getStore()->getCode();
+		//echo "Store Code:"; 
+		//echo $storeCode; echo "<br/>";
 		//print_r ($storeName); 
 		//echo $storeName; 
 		
         //Your logic here
 
-		if($storeName =='France'){ 
+		if($storeCode =='fr'){ 
 			$title = "Avis clients";
 		}
-		else if($storeName =='English'){ 
+		else if($storeCode =='en'){ 
 			$title = "Customer reviews";
 		}
-		else if($storeName =='German'){ 
+		else if($storeCode =='de'){ 
 			$title = "Kunden-Bewertungen";
 		}
-		else if($storeName =='Spanish'){ 
+		else if($storeCode =='es'){ 
 			$title = "Opiniones de los clientes";
 		}
-		else if($storeName =='Italian'){ 
+		else if($storeCode =='it'){ 
 			$title = "Recensioni dei clienti";
 		}
-		else if($storeName =='Netherland'){ 
+		else if($storeCode =='nl'){ 
 			$title = "Beoordelingen van klanten";
 		} 
         
