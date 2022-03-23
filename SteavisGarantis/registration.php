@@ -1,6 +1,6 @@
 <?php
 \Magento\Framework\Component\ComponentRegistrar::register(
 	\Magento\Framework\Component\ComponentRegistrar::MODULE,
-	'Mageplaza_SteavisGarantis',
+	'Mageplaza_SteavisGarantis   ',
 	__DIR__
 );
