@@ -1,0 +1,16 @@
+<?php
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $storeManager = $objectManager->create('\Magento\Store\Model\StoreManagerInterface');
+    $baseURL_l = $social_image_url = $storeManager->getStore()->getBaseUrl();
+    ?>
+    <form action="<?php /* @escapeNotVerified */ echo $baseURL_l . 'contactus/index/save' ?>" method="post" id="form-validate" enctype="multipart/form-data" autocomplete="off" data-mage-init='{"validation":{}}' data-hasrequired="<?php /* @escapeNotVerified */ echo __('* Required Fields') ?>">
+        <div class="field required">
+            <label for="email_address" class="label"><span><?php /* @escapeNotVerified */ echo __('Email') ?></span><span class="span">*</span></label>
+            <div class="control">
+                <input type="email" name="email" autocomplete="email" id="email_address" value="" title="<?php /* @escapeNotVerified */ echo __('Email') ?>" class="input-text" data-validate="{required:true, 'validate-email':true}">
+            </div>
+        </div><br/>
+ <div class="primary">
+            <button type="submit" class="action submit primary" title="<?php /* @escapeNotVerified */ echo __('Submit') ?>"><span><?php /* @escapeNotVerified */ echo __('Submit') ?></span></button>
+        </div>
+    </form>

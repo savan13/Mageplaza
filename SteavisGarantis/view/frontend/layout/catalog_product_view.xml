@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="product.info.main">
+            <block class="Mageplaza\SteavisGarantis\Block\Module" name="custom.content.on.product" template="Mageplaza_SteavisGarantis::sag_review.phtml" after="-"/>
+		
+			<referenceBlock name="reviews.tab" remove="true" />
+			<referenceBlock name="product.review.form" remove="true" />
+			<referenceBlock name="product.info.review" remove="true" />
+			<!-- <referenceBlock name="product.info.main">
+				<block class="Magento\Catalog\Block\Product\View" name="test.tab" template="Mageplaza_SteavisGarantis::custom_tab.phtml" group="detailed_info" >
+					<arguments>
+						<argument name="sort_order" xsi:type="string">40</argument>
+						<argument translate="true" name="title" xsi:type="string">l'avis du client</argument>
+					</arguments>
+				</block>
+			</referenceBlock> -->
+			<referenceBlock name="product.info.details">
+				<block class="Magento\Catalog\Block\Product\View" name="custom.tab" template="Mageplaza_SteavisGarantis::custom_tab.phtml" group="detailed_info" >
+					<arguments>
+						<!--<argument translate="true" name="title" xsi:type="string">l'avis du client</argument>-->
+						 <argument name="title" xsi:type="helper" helper="Mageplaza\SteavisGarantis\Helper\Data::getLabel"/>
+
+					</arguments>
+				</block>
+			</referenceBlock>
+			<!--  <referenceContainer name="content">
+				<block class="Magento\Catalog\Block\Product\View" name="test.tab" after="product.info.details" before="catalog.product.related" template="Mageplaza_SteavisGarantis::custom_tab.phtml"/>
+			</referenceContainer> -->
+			
+			<referenceBlock name="category.products.list" template="Mageplaza_SteavisGarantis::product/list.phtml" />
+        </referenceContainer>
+    </body>
+</page>

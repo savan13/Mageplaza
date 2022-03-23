@@ -1,0 +1,88 @@
+<style>
+.admin__old label {
+    width: 20% !important;
+    float: left;
+    font-size: 15px;
+}
+
+.admin__old input {
+    width: 80%;
+    float: right;
+}
+
+.admin__old fieldset {
+    margin: 0 0 50px;
+    padding: 25px 25px;
+}
+
+.admin__old legend {
+    font-size: 20px;
+    padding: 0 10px;
+    font-weight: 600;
+    color: #e85d22;
+}
+
+.admin__old input[type="submit"] {
+    background: #e85d22;
+    width: auto;
+    border: 0;
+    color: #fff;
+    padding: 10px 25px;
+}
+
+select#language {
+    width: 15%;
+}
+
+input#agree {
+    float: left;
+    width: auto;
+    margin: 3px 10px 0 0;
+}
+</style>
+<form action="/action_page.php">
+    <fieldset>
+        <legend>General:</legend>
+        <label for="api">API Key:</label>
+        <input type="text" id="api" name="api"><br><br>
+    </fieldset>
+    <fieldset>
+        <legend>sales:</legend>
+        <label for="sales">Order Status to export:</label>
+        <select name="sales" id="sales">
+            <option value="procesing">Procesing</option>
+            <option value="complete">Complete</option>
+            <option value="closed">Closed</option>
+            <option value="anceled">Canceled</option>
+            <option value="on-hold">On Hold</option>
+        </select><br><br>
+    </fieldset>
+    <fieldset>
+        <legend>Site Review:</legend>
+        <label for="site-review">Enable Site Review:</label>
+        <select name="site-review" id="site-review">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+        </select><br><br>
+    </fieldset>
+    <fieldset>
+        <legend>Footer Review:</legend>
+        <label for="footer-review">Enable Footer Review:</label>
+        <select name="footer-review" id="footer-review">
+            <option value="f-yes-v">Yes, Show it vertically</option>
+            <option value="f-yes-h">Yes, Show it horizontaly</option>
+            <option value="no">No</option>
+        </select><br><br>
+        <label for="iframe">Show iframe after CSS element:</label>
+        <input type="text" id="iframe" name="iframe"><br><br>
+    </fieldset>
+    <fieldset>
+        <legend>Footer Link:</legend>
+        <label for="footer-link">Enabled:</label>
+        <select name="footer-link" id="footer-link">
+            <option value="flink-yes-v">Yes</option>
+            <option value="flink-no">No</option>
+        </select><br><br>
+    </fieldset>
+        <input type="submit" value="Save">
+</form>

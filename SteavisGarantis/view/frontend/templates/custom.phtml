@@ -1,0 +1,8 @@
+<?php 
+$helper = \Magento\Framework\App\ObjectManager::getInstance()->get('Mageplaza\SteavisGarantis\Helper\Data'); 
+if($helper->isEnablefooterlink()) : ?>
+
+<?php echo $block->getChildHtml('form.subscribe'); ?>
+
+
+<?php endif; ?>

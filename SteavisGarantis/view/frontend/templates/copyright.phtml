@@ -1,0 +1,54 @@
+<?php 
+$helper = \Magento\Framework\App\ObjectManager::getInstance()->get('Mageplaza\SteavisGarantis\Helper\Data'); 
+$objectManager =  \Magento\Framework\App\ObjectManager::getInstance();        
+$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+$storeName = \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Store\Model\StoreManagerInterface::class)->getStore()->getName();
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+$storeCode = $storeManager->getStore()->getCode();
+//echo "Store Code: "; 
+//echo $storeCode; echo "<br/>"; 
+$finalArr = explode('.',$_SERVER['HTTP_HOST']);
+//print_r($finalArr[1]);
+//echo $finalArr[1];
+
+
+if($helper->isEnablefooterlink()) : ?>
+
+
+<div class="cert">
+<?php 
+if($storeCode =='en'){ ?>
+	<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/icon-en.png'); ?>" />
+	<p>Merchant approved by Guaranteed Reviews Company,<a href="https://www.societe-des-avis-garantis.fr/<?php echo $finalArr[1]; ?>" target="_blank">click here to display attestation.</a></p>
+	<?php }
+else if($storeCode =='fr'){ ?>
+	<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/icon-fr.png'); ?>" />
+	<p>Marchand approuvé par la Société des Avis Garantis, <a href="https://www.societe-des-avis-garantis.fr/<?php echo $finalArr[1]; ?>" target="_blank">cliquez ici pour vérifier l'attestation.</a></p>
+<?php }
+else if($storeCode =='de'){ ?>
+	<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/icon-de.png'); ?>" />
+	<p>Händler zugelassen von Gesellschaft für Garantierte Bewertungen, <a href="https://www.g-g-b.de/<?php echo $finalArr[1]; ?>" target="_blank">Klicken Sie hier.</a></p>
+<?php }
+else if($storeCode =='es'){ ?>
+	<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/icon-es.png'); ?>" />
+	<p>Comerciante aprobado por la Sociedad de Opiniones Contrastadas, <a href="https://www.sociedad-de-opiniones-contrastadas.es/<?php echo $finalArr[1]; ?>" target="_blank">haga clic aquí para mostrar el certificado.</a></p>
+<?php }
+else if($storeCode =='it'){ ?>
+	<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/icon-it.png'); ?>" />
+	<p>Mercante approvato dalla Società Recensioni Garantite, <a href="https://www.societa-recensioni-garantite.it/<?php echo $finalArr[1]; ?>" target="_blank">clicca qui per visualizzare l'attestato.</a></p>
+<?php }
+else if($storeCode =='nl'){ ?>
+	<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/icon-nl.png'); ?>" />
+	<p>Handelaar goedgekeurd door Gegarandeerde Beoordelingen Nederland, <a href="https://www.g-b-n.nl/<?php echo $finalArr[1]; ?>" target="_blank">klik hier om attest te tonen.</a></p>
+<?php }
+
+?>
+
+</div>
+
+<?php endif; ?>
+
+<?php
+ /*$value=$this->helper('Mageplaza\SteavisGarantis\Helper\Data')->getConfig('sagwidget/jswidget/api');
+    echo $value; */
+?>

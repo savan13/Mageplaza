@@ -1,0 +1,194 @@
+<style>
+.admin__old label {
+    width: 20% !important;
+    float: left;
+    font-size: 15px;
+}
+
+.admin__old input {
+    width: 80%;
+    float: right;
+}
+
+.admin__old fieldset {
+    margin: 0 0 50px;
+    padding: 25px 25px;
+}
+
+.admin__old legend {
+    font-size: 20px;
+    padding: 0 10px;
+    font-weight: 600;
+    color: #e85d22;
+}
+
+.admin__old input[type="submit"] {
+    background: #e85d22;
+    width: auto;
+    border: 0;
+    color: #fff;
+    padding: 10px 25px;
+}
+
+select#language {
+    width: 15%;
+}
+
+input#agree {
+    float: left;
+    width: auto;
+    margin: 3px 10px 0 0;
+}
+.accept-check {
+    display: flex;
+}
+.input-accept-check {
+    flex: 0 0 18px;
+    position: relative;
+    top: 3px;
+    margin-right: 6px;
+}
+</style>
+<?php
+	$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+	$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+	$storeCode = $storeManager->getStore()->getCode();
+	/* echo "Store ID:"; 
+	echo $storeManager->getStore()->getStoreId();
+	echo "<br/>";
+	echo "Store Code:"; 
+	echo $storeCode; echo "<br/>"; */  
+
+    function sendMailAction() {
+        $html="
+        put your html content here
+        blah blah
+
+        ";
+        $mail = Mage::getModel('core/email');
+        $mail->setToName('Shweta');
+        $mail->setToEmail('sweta@virtualheight.com');
+        $mail->setBody('Mail Text / Mail Content');
+        $mail->setSubject('Mail Subject');
+        $mail->setFromEmail('Sender Mail Id');
+        $mail->setFromName("Msg to Show on Subject");
+        $mail->setType('html');// You can use Html or text as Mail format
+        $mail->setBodyHTML($html);  // your content or message
+
+        try {
+            $mail->send();
+            Mage::getSingleton('core/session')->addSuccess('Your request has been sent');
+            $this->_redirect('');
+        }
+        catch (Exception $e) {
+            Mage::getSingleton('core/session')->addError('Unable to send.');
+            $this->_redirect('');
+        }
+    }
+	
+	if(isset($_GET["msg"])&& $_GET["msg"] == "success")
+	{
+
+?>
+	<div class="alert alert-success">Account Created Successfully</div>
+<?php
+	}
+	$objectManager = \Magento\Framework\App\ObjectManager::getInstance(); // Instance of object manager
+	$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+	$connection = $resource->getConnection();
+	$tableName = $resource->getTableName('sag_user'); //gives table name with prefix  
+	$data = $connection->fetchAll("SELECT * FROM sag_user where id= 1");
+			 
+?>
+<form action="<?php echo $block->getUrl('steavisgarantis/create/index') ?>" method="post" onSubmit="return validate(this);">
+
+<input name="form_key" type="hidden" value="<?php echo $block->getFormKey(); ?>" />
+	<fieldset>
+        <legend>Site Information:</legend>
+        <label for="siteurl">Site URL: *</label>
+        <input type="text" id="siteurl" value = "<?php echo (isset($data[0]['siteurl']))?$data[0]['siteurl'] : ''; ?>" name="siteurl" required><br><br>
+     
+		<label for="email">Email: *</label>
+        <input type="email" id="email" value = "<?php echo (isset($data[0]['email']))?$data[0]['email'] : ''; ?>" name="email" required ><br><br>
+      
+		
+		<label for="email">API key</label>
+		 <?php echo (isset($data[0]['apikey']))?$data[0]['apikey'] : ''; ?>
+		 <br><br>
+		<tr>
+			<td class="label">
+				
+					<label for="steavisgarantis_cgv">Terms and Conditions 
+						<span class="required">*</span>
+					</label>
+				
+			</td>
+			<td class="value">
+				<div class="accept-check">
+					<div class="input-accept-check">
+					<input id="steavisgarantis_cgv" name="cgv"  value="1" title="Terms and Conditions" type="checkbox" required class=" required-entry " checked></div>
+					<?php 
+					if($storeCode == 'fr'){
+					echo "<div> J'accepte les termes et conditions : 
+					
+					<a href='https://www.societe-des-avis-garantis.fr/cgv/' target='_blank'>https://www.societe-des-avis-garantis.fr/cgv/
+					</a></div>";
+					
+					}else if ($storeCode == 'en') {
+					echo "<div> I accept Terms and Conditions : 
+					
+					<a href='https://www.guaranteed-reviews.com/terms/' target='_blank'>https://www.guaranteed-reviews.com/terms/
+					</a></div>";
+					}
+					else if ($storeCode == 'es') {
+					echo "<div> Acepto los términos y condiciones : 
+					
+					<a href='https://www.sociedad-de-opiniones-contrastadas.es/cgv/' target='_blank'>https://www.sociedad-de-opiniones-contrastadas.es/cgv/
+					</a></div>";
+					}
+					else if ($storeCode == 'it') {
+					echo "<div> Accetto i Termini e le Condizioni : 
+					
+					<a href='https://www.societa-recensioni-garantite.it/cgv/' target='_blank'>https://www.societa-recensioni-garantite.it/cgv/
+					</a></div>";
+					}
+					else if ($storeCode == 'de') {
+					echo "<div> Ich akzeptiere die Allgemeinen Geschäftsbedingungen : 
+					
+					<a href='https://www.g-g-b.de/verkaufsbedingungen/' target='_blank'>https://www.g-g-b.de/verkaufsbedingungen/
+					</a></div>";
+					}
+					else if ($storeCode == 'nl') {
+					echo "<div> Ik accepteer de algemene voorwaarden : 
+					
+					<a href='https://www.g-b-n.nl/algemene-verkoopvoorwaarden/' target='_blank'>https://www.g-b-n.nl/algemene-verkoopvoorwaarden/
+					</a></div>";
+					}
+					
+					?>
+					
+				</div>				
+			</td>
+		</tr>
+    </fieldset>
+	
+    
+        <input type="submit" value="Create Account" id="create_account">
+</form>
+<script>
+    require(['jquery'],function($){
+        $('#create_account').on('click', function (){
+            var siteurl = $("input[name='siteurl']").val();
+            var email = $("input[name='email']").val();
+            //var email = $("input[name='email']").val();
+           
+            var url = "<?php echo $block->getUrl('steavisgarantis/save/index') ?>";
+              jQuery.ajax({
+                url: url,
+                type: "POST",
+                data: {siteurl:siteurl,email:email},
+                showLoader: true,
+            });
+        });
+    });
+</script>

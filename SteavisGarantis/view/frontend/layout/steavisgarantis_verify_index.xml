@@ -1,0 +1,25 @@
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd" layout="1column">
+  	<head>
+       <!--- <remove src="css/print.css"/>
+        <remove src="css/styles-l.css"/>
+        <remove src="fonts/Luma-Icons.woff2"/>
+        <remove src="fonts/opensans/bold/opensans-700.woff2"/>
+        <remove src="fonts/opensans/semibold/opensans-600.woff2"/>
+        <remove src="fonts/opensans/regular/opensans-400.woff2"/>
+        <remove src="fonts/opensans/light/opensans-300.woff2"/>
+        <remove src="merged/9d966c931e0e71a91875e06d610e4748.js"/>-->
+    </head>
+	<body>
+		<referenceContainer name="head" remove="true"/>
+		<referenceContainer name="header.container" remove="true"/>
+        <referenceContainer name="content">
+            <block class="Mageplaza\SteavisGarantis\Block\Verify" name="steavisgarantis_verify_index" template="verify.phtml" />
+        </referenceContainer>
+		<!--<referenceBlock name="catalog.topnav" remove="true"/>
+		<referenceContainer name="footer-container" remove="true"/>
+		<referenceContainer name="copyright" remove="true"/>
+		<referenceContainer name="custom_block" remove="true"/>
+		<referenceContainer name="header.panel.wrapper" remove="true" />
+		<referenceContainer name="header.panel" remove="true" />-->
+    </body>
+</page>

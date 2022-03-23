@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<head>
+          <css src="Mageplaza_SteavisGarantis::css/review.css" />
+		 <link rel="stylesheet" type="text/css" src="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&amp;display=swap" src_type="url" />
+		 
+
+     </head>
+	<body>
+		<referenceContainer name="page.bottom.container">
+			<container name="categoryugc" htmlTag="div" htmlClass="ugc">
+				<block class="Magento\Framework\View\Element\Template" name="bottom.ugc.div" template="Mageplaza_SteavisGarantis::displayIframeFooterWidget.phtml"/>
+			</container>
+		</referenceContainer>
+
+		<referenceContainer name="footer">
+			<block class="Magento\Framework\View\Element\Template" name="custom_jquery" after="-" template="Mageplaza_SteavisGarantis::displayJavascriptWidget.phtml"/>
+			<block class="Magento\Theme\Block\Html\Footer" name="custom_block" as="custom_block" after="footer_links" template="Mageplaza_SteavisGarantis::custom.phtml"/>
+		</referenceContainer>
+		
+		<referenceContainer name="footer-container">
+            <referenceBlock name="footer_links" remove="false"/>
+            <referenceBlock name="report.bugs" remove="false"/>            
+            <block class="Magento\Theme\Block\Html\Footer" name="custom_block" as="custom_block" template="Mageplaza_SteavisGarantis::copyright.phtml"/>
+        </referenceContainer>
+		
+		
+	</body>
+</page>

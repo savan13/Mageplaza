@@ -1,0 +1,374 @@
+
+<div class="custom-content" id="review">
+<?php
+
+$finalArr = explode('.',$_SERVER['HTTP_HOST']);
+//print_r($finalArr[1]);
+?>
+
+<?php echo $block->getLayout()->createBlock('Magento\Cms\Block\Block')->setBlockId('Avis clients')->toHtml(); 
+		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		$storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+		
+		$storeName = \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Store\Model\StoreManagerInterface::class)->getStore()->getName();
+		$resource = $objectManager->get('Magento\Framework\App\ResourceConnection');
+		$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+		$storeCode = $storeManager->getStore()->getCode();
+		
+		
+		//echo "Store Code:"; 
+		//echo $storeCode; echo "<br/>"; 
+		$connection = $resource->getConnection();
+		$tableName = $resource->getTableName('sag_review');
+		//get current product
+		$product = $objectManager->get('Magento\Framework\Registry')->registry('current_product');
+		$product_id = $product->getId();
+		//Get current store language
+		$lang = $storeManager->getStore()->getCode(); 
+		//Select Data from table
+		//$sql = "Select * FROM ". $tableName. " WHERE lang='".$lang . "' idProduct =". $product_id;
+		//$sweta = "Select * FROM sag_review WHERE idProduct =1 AND lang = 'fr'";
+
+		//echo $_lang;
+        /* $sql = $connection->select()
+            ->from($tableName)
+            ->where('idProduct = ?',$product_id)
+            ->where('lang = ?',$lang); */
+			$sql = $connection->query("Select * FROM sag_review WHERE idProduct =".$product_id." AND lang = '".$lang."' order by date_time desc");
+			
+			$result=$sql->fetchAll();
+
+			//$result = $connection->fetchAll($sql);
+		
+		/* echo '<pre>';
+		print_r($result);  */
+		$reviewCount = count($result);
+		/*Review Average*/
+		//$result_count = "Select review_rating FROM ". $tableName. " WHERE idProduct =". $product_id;
+		
+		$result_count = $connection->select('review_rating')
+            ->from($tableName)
+            ->where('idProduct = ?',$product_id)
+            ->where('lang = ?',$lang);
+            
+		$data=$connection->fetchAll($result_count);
+		$count = count($data);		
+		$sum = array_sum(array_column($data,'review_rating'));
+		$average = $sum/$count;
+		//echo $storeName;
+		$helper = \Magento\Framework\App\ObjectManager::getInstance()->get('Mageplaza\SteavisGarantis\Helper\Data'); 
+		
+		if($storeName =='France'){ 
+			$basedon = 'Basé sur';
+			$review = 'avis';
+			$view_review = 'VOIR LES AVIS';
+			$title = 'AVIS À PROPOS DU PRODUIT';
+			$posted_on = 'Publié le ';
+		}
+		else if($storeName =='English'){ 
+			$basedon = 'Based on' ;
+			$review = 'Reviews';
+			$view_review = 'SEE REVIEWS';
+			$title = 'NOTICE ABOUT THE PRODUCT';
+			$posted_on = 'Posted on ';
+		}
+		else if($storeName =='German'){ 
+			$basedon = 'Beyogen auf';
+			$review = 'Meinung';
+			$view_review = 'BEWERTUNGEN ANSEHEN';
+			$title = 'HINWEIS ZUM PRODUKT';
+			$posted_on = 'Veröffentlicht ';
+		}
+		else if($storeName =='Spanish'){ 
+			$basedon = 'Basado en';
+			$review = 'opinión';
+			$view_review = 'VER RESEÑAS';
+			$title = 'AVISO SOBRE EL PRODUCTO';
+			$posted_on = 'Publicado ';
+		}
+		else if($storeName =='Italian'){ 
+			$basedon = 'Basato su';
+			$review = 'opinione';
+			$view_review = 'VEDI RECENSIONI';
+			$title = 'AVVISO SUL PRODOTTO';
+			$posted_on = 'Pubblicato ';
+		}
+		else if($storeName =='Netherland'){ 
+			$basedon = 'Gebaseerd op';
+			$review = 'de mening';
+			$view_review = 'BEKIJK BEOORDELINGEN';
+			$title = 'KENNISGEVING OVER HET PRODUCT';
+			$posted_on = 'Gepubliceerd ';
+		}
+if ($reviewCount >= '1') {
+	//echo 'display'; 
+
+echo '<h3>'. $title;
+echo '</h3><ul class="reviewList">';
+		$five_star = $connection->query("Select count(*) as review_count,review_rating FROM sag_review WHERE idProduct =".$product_id." AND lang = '".$lang."' GROUP BY review_rating");
+		$star_data=$five_star->fetchAll();
+		/* echo '<pre>';
+		print_r($star_data); */
+
+		//echo 'Select review_rating FROM ". $tableName. " WHERE idProduct =". $product_id"';
+		/* $best_review = $connection->query("SELECT * FROM sag_review WHERE idProduct = '$product_id' ORDER BY 'review_rating' DESC LIMIT 1");
+		$top_data=$best_review->fetchAll();
+		print_r($best_review);
+		 */
+		$ratingArray = array();
+		foreach($star_data as $ratingCount){
+			$ratingArray[$ratingCount['review_rating']] = $ratingCount['review_count'];
+		}		
+		?>
+		
+		<div class="inner bgGrey1" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+			<div class="logoCont">
+			<?php //echo $product_id . $lang . $sql; ?>
+			<?php if($storeCode =='fr'){ ?>
+				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_fr.png'); ?>" width="150px" height="auto" class="logoAg"/>
+				<a href="https://www.societe-des-avis-garantis.fr/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Voir l'attestation</a>
+			<?php }
+				else if($storeCode =='en'){ ?>
+				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_en.png'); ?>" width="150px" height="auto" class="logoAg"/>
+				<a href="https://www.guaranteed-reviews.com/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">See the certificate</a>
+			<?php }
+				else if($storeCode =='de'){ ?>
+				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_de.png'); ?>" width="150px" height="auto" class="logoAg"/>
+				<a href="https://www.g-g-b.de/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Siehe das Zertifikat</a>
+			<?php }
+				else if($storeCode =='es'){ ?>
+				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_es.png'); ?>" width="150px" height="auto" class="logoAg"/>
+				<a href="https://www.sociedad-de-opiniones-contrastadas.es/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Ver el certificado</a>
+			<?php }
+				else if($storeCode =='it'){ ?>
+				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_it.png'); ?>" width="150px" height="auto" class="logoAg"/>
+				<a href="https://www.societa-recensioni-garantite.it/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Guarda il certificato</a>
+			<?php }
+				else if($storeCode =='nl'){ ?>
+				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_nl.png'); ?>" width="150px" height="auto" class="logoAg"/>
+				<a href="https://www.g-b-n.nl/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Zie het certificaat</a>
+			<?php }?>
+			</div>
+			<div class="statCont">
+				<div class="steavisgarantisStats">
+				<?php 
+				$fivestaruser=isset($ratingArray[5])?$ratingArray[5]:'0';
+				$fourstaruser=isset($ratingArray[4])?$ratingArray[4]:'0';
+				$threestaruser=isset($ratingArray[3])?$ratingArray[3]:'0';
+				$twostaruser=isset($ratingArray[2])?$ratingArray[2]:'0';
+				$onestaruser=isset($ratingArray[1])?$ratingArray[1]:'0';
+				
+			
+				?>
+					<div class="item"><span class="stat"><div class="note bar1" style="height:<?php echo round($onestaruser*100/$count); ?>%"><span class="value"><?php echo $onestaruser; ?></span></div></span><span class="name">1★</span></div>
+					<div class="item"><span class="stat"><div class="note bar2" style="height:<?php echo round($twostaruser*100/$count); ?>%"><span class="value"><?php echo $twostaruser; ?></span></div></span><span class="name">2★</span></div>
+					<div class="item"><span class="stat"><div class="note bar3" style="height:<?php echo round($threestaruser*100/$count); ?>%"><span class="value"><?php echo $threestaruser; ?></span></div></span><span class="name">3★</span></div>
+					<div class="item"><span class="stat"><div class="note bar4" style="height:<?php echo round($fourstaruser*100/$count); ?>%"><span class="value"><?php echo $fourstaruser; ?></span></div></span><span class="name">4★</span></div>
+					<div class="item"><span class="stat"><div class="note bar5" style="height:<?php echo round($fivestaruser*100/$count); ?>%"><span class="value"><?php echo $fivestaruser; ?></span></div></span><span class="name">5★</span></div>
+				</div>
+			</div>
+			<div class="reviewCont">
+				<div class="reviewGlobal">
+					<?php $num = round($average*2, 1);?>
+					<div class="largeNote"><big><?php echo $num; ?></big>/10<p><br><?php echo $basedon .' '.$count.' '.$review ?></p></div>
+                </div>
+			</div>
+			<meta itemprop="ratingValue" content="<?php echo $average; ?>">
+			<meta itemprop="reviewCount" content="<?php echo $count; ?>">
+			<meta itemprop="bestRating" content="5">
+		</div>
+		
+		<?php
+		foreach($result as $sag_results){
+			/* echo '<pre>';
+			print_r($sag_results); */
+			$pid = $sag_results['idProduct'];
+			$name = $sag_results['reviewer_name'];
+			$posted_date = $sag_results['date_time'];
+			$newDate = date("d-m-Y H:i:s", strtotime($posted_date));  
+			$reviewTxt = $sag_results['review_text'];
+			$answerTxt = $sag_results['answer_text'];
+			$reviewRating = $sag_results['review_rating'];
+			$resposeimage = $this->getViewFileUrl("Mageplaza_SteavisGarantis::images/ico_pen.png");
+			if($answerTxt!= null){ $xstyle = "style='display:none'";} 
+			
+			
+			
+			//$storeCode= (isset ($_REQUEST["lang"])? $_REQUEST["lang"]:'en');
+			if($storeCode == 'fr'){ ?>
+			<li>
+						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"><?php echo $posted_on; echo $newDate; ?>
+						</span></div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt; ?></p></div>
+						<?php if (!empty($answerTxt)){?>
+						<div class="reponse-review"><span>
+						<p><img src='<?php echo $resposeimage; ?>'></p>
+						<p class="review_merchant">Réponse du marchand</p></span>
+						<p class="merchant_response">
+						
+						<?php echo $answerTxt; ?></p></div>
+						<?php } ?>
+						<div class="bh-stars" data-bh-rating='<?php echo $reviewRating; ?>'>
+							<svg version="1.1" class="bh-star bh-star--1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+						</div>
+						
+						</li>
+			
+			
+			
+			<?php }else if ($storeCode == 'en') { ?>
+			<li>
+						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"> 
+						<?php echo $posted_on; echo $posted_date; ?></span></div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt;?></p></div>
+						
+						<?php if (!empty($answerTxt)){?>
+						<div class="reponse-review"><span>
+						<p><img src='<?php echo $resposeimage; ?>'></p>
+						<p class="review_merchant">Merchant Response</p></span>
+						<p class="merchant_response">
+						
+						<?php echo $answerTxt; ?></p></div>
+						<?php } ?>
+						
+						<div class="bh-stars" data-bh-rating='<?php $reviewRating; ?>'>
+							<svg version="1.1" class="bh-star bh-star--1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+						</div>
+						
+						</li>
+						
+					<?php }else if ($storeCode == 'de') { ?>
+					<li>
+						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"> 
+						<?php echo $posted_on; echo $posted_date; ?></span></div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt;?></p></div>
+						
+						<?php if (!empty($answerTxt)){?>
+						<div class="reponse-review"><span>
+						<p><img src='<?php echo $resposeimage; ?>'></p>
+						<p class="review_merchant">Antwort des Händlers</p></span>
+						<p class="merchant_response">
+						
+						<?php echo $answerTxt; ?></p></div>
+						<?php } ?>
+						
+						<div class="bh-stars" data-bh-rating='<?php $reviewRating; ?>'>
+							<svg version="1.1" class="bh-star bh-star--1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+						</div>
+						
+					</li>
+					<?php }else if ($storeCode == 'it') { ?>
+					<li>
+						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"> 
+						<?php echo $posted_on; echo $posted_date; ?></span></div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt;?></p></div>
+						
+						<?php if (!empty($answerTxt)){?>
+						<div class="reponse-review"><span>
+						<p><img src='<?php echo $resposeimage; ?>'></p>
+						<p class="review_merchant">Risposta del commerciante</p></span>
+						<p class="merchant_response">
+						
+						<?php echo $answerTxt; ?></p></div>
+						<?php } ?>
+						
+						<div class="bh-stars" data-bh-rating='<?php $reviewRating; ?>'>
+							<svg version="1.1" class="bh-star bh-star--1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+						</div>
+						
+					</li>
+				<?php }else if ($storeCode == 'nl') { ?>
+					<li>
+						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"> 
+						<?php echo $posted_on; echo $posted_date; ?></span></div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt;?></p></div>
+						
+						<?php if (!empty($answerTxt)){?>
+						<div class="reponse-review"><span>
+						<p><img src='<?php echo $resposeimage; ?>'></p>
+						<p class="review_merchant">Reactie van verkoper</p></span>
+						<p class="merchant_response">
+						
+						<?php echo $answerTxt; ?></p></div>
+						<?php } ?>
+						
+						<div class="bh-stars" data-bh-rating='<?php $reviewRating; ?>'>
+							<svg version="1.1" class="bh-star bh-star--1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+						</div>
+						
+					</li>
+
+				<?php }else if ($storeCode == 'es') { ?>
+					<li>
+						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"> 
+						<?php echo $posted_on; echo $posted_date; ?></span></div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt;?></p></div>
+						
+						<?php if (!empty($answerTxt)){?>
+						<div class="reponse-review"><span>
+						<p><img src='<?php echo $resposeimage; ?>'></p>
+						<p class="review_merchant">Respuesta del comerciante</p></span>
+						<p class="merchant_response">
+						
+						<?php echo $answerTxt; ?></p></div>
+						<?php } ?>
+						
+						<div class="bh-stars" data-bh-rating='<?php $reviewRating; ?>'>
+							<svg version="1.1" class="bh-star bh-star--1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+							
+							<svg version="1.1" class="bh-star bh-star--5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
+						</div>
+						
+					</li>			
+			
+			
+			<?php } 
+			}?></ul>
+<?php } ?>
+</div>
