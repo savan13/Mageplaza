@@ -1,0 +1,113 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+		 <tab id="sag" translate="label" sortOrder="10">
+            <label>SAG</label>
+        </tab>
+        <section id="sagwidget" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>sag-setting</class>
+            <label>Settings</label>
+            <tab>sag</tab>
+            <resource>Mageplaza_SteavisGarantis::sagwidget_config</resource>
+            <group id="jswidget" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>General Configuration</label>
+					<!--<field id="account" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Do you have account?</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				    </field>
+
+					<field id="createaccount" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+					
+     				<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+				    <frontend_model>Mageplaza\SteavisGarantis\Block\Adminhtml\System\Config\Form\Field\Link</frontend_model>
+					</field>-->
+
+					<field id="api" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>API Key (France)</label>
+						<depends>
+							<field id="sagwidget/jswidget/account">1</field>
+						</depends>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+					
+					<field id="api_english" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>API Key (English)</label>
+						<depends>
+							<field id="sagwidget/jswidget/account">1</field>
+						</depends>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+					
+					<field id="api_german" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>API Key (German)</label>
+						<depends>
+							<field id="sagwidget/jswidget/account">1</field>
+						</depends>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+					
+					<field id="api_spanish" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>API Key (Spanish)</label>
+						<depends>
+							<field id="sagwidget/jswidget/account">1</field>
+						</depends>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+					
+					<field id="api_italian" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>API Key (Italian)</label>
+						<depends>
+							<field id="sagwidget/jswidget/account">1</field>
+						</depends>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+					
+					<field id="api_dutch" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>API Key (Netherland)</label>
+						<depends>
+							<field id="sagwidget/jswidget/account">1</field>
+						</depends>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+					
+					
+					<!-- <field id="language" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Select Language</label>
+					<source_model>Mageplaza\SteavisGarantis\Model\Adminhtml\System\Config\Source\LanguageSelect</source_model>
+					</field> -->
+					
+					<!-- <field id="delivery_time" translate="label" sortOrder="10" type="text" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Delivery time</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field> -->
+
+					<field id="order_status_planned_to_ship" translate="label" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
+						<label>Statutes to include</label>
+						<source_model>Magento\Sales\Model\Config\Source\Order\Status</source_model>
+					</field>
+					
+					<field id="enablejs" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Javascript Widget</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+					
+					<field id="enableiframe" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>IFrame Widget</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+					
+					<field id="enablereview" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Iframe Widget Position</label>
+					<source_model>Mageplaza\SteavisGarantis\Block\Adminhtml\PostionSelect</source_model>
+					</field>
+									
+					<field id="enablefooterlink" translate="label" sortOrder="10" type="select" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Verification link</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					</field>
+				
+				
+            </group>
+        </section>
+    </system>
+</config>
