@@ -95,8 +95,10 @@ $_helper = $this->helper(Magento\Catalog\Helper\Output::class);
                                 $product = $objectManager->get('Magento\Framework\Registry')->registry('current_product');
                                // $product_id = $product->getId();
                                 $product_id = $_product->getId();
-                                echo 'Product Id' . $product_id;
-                                //Select Data from table
+                                echo "<b>";
+								echo 'Product Id ' . $product_id;
+                                echo "</b>";
+								//Select Data from table
                                // $sql = "SELECT AVG(review_rating) as review_rating FROM ". $tableName. " WHERE idProduct =". $product_id;
                                $sql = $connection->select()
                                         ->from($tableName)

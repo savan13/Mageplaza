@@ -67,35 +67,60 @@ $finalArr = explode('.',$_SERVER['HTTP_HOST']);
 		}
 		else if($storeCode =='en'){ 
 			$basedon = 'Based on' ;
-			$review = 'Reviews';
+			if($count == '1'){
+				$review = 'Review';
+			}
+			else{
+				$review = 'Reviews';
+			}
 			$view_review = 'SEE REVIEWS';
 			$title = 'NOTICE ABOUT THE PRODUCT';
 			$posted_on = 'Posted on ';
 		}
 		else if($storeCode =='de'){ 
 			$basedon = 'Beyogen auf';
-			$review = 'Meinung';
+			if($count == '1'){
+				$review = 'Bewertung';
+			}
+			else{
+				$review = 'Bewertungen';
+			}
 			$view_review = 'BEWERTUNGEN ANSEHEN';
 			$title = 'HINWEIS ZUM PRODUKT';
 			$posted_on = 'Veröffentlicht ';
 		}
 		else if($storeCode =='es'){ 
 			$basedon = 'Basado en';
-			$review = 'opinión';
+			if($count == '1'){
+				$review = 'reseña';
+			}
+			else{
+				$review = 'reseñas';
+			}
 			$view_review = 'VER RESEÑAS';
 			$title = 'AVISO SOBRE EL PRODUCTO';
 			$posted_on = 'Publicado ';
 		}
 		else if($storeCode =='it'){ 
 			$basedon = 'Basato su';
-			$review = 'opinione';
+			if($count == '1'){
+				$review = 'recensione';
+			}
+			else{
+				$review = 'recensioni';
+			}
 			$view_review = 'VEDI RECENSIONI';
 			$title = 'AVVISO SUL PRODOTTO';
 			$posted_on = 'Pubblicato ';
 		}
 		else if($storeCode =='nl'){ 
 			$basedon = 'Gebaseerd op';
-			$review = 'de mening';
+			if($count == '1'){
+				$review = 'Beoordeling';
+			}
+			else{
+				$review = 'Beoordelingen';
+			}
 			$view_review = 'BEKIJK BEOORDELINGEN';
 			$title = 'KENNISGEVING OVER HET PRODUCT';
 			$posted_on = 'Gepubliceerd ';
@@ -126,27 +151,27 @@ echo '</h3><ul class="reviewList">';
 			<?php //echo $product_id . $lang . $sql; ?>
 			<?php if($storeCode =='fr'){ ?>
 				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_fr.png'); ?>" width="150px" height="auto" class="logoAg"/>
-				<a href="https://www.societe-des-avis-garantis.fr/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Voir l'attestation</a>
+				<a href="https://www.societe-des-avis-garantis.fr/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn_fr" target="_blank">Voir l'attestation</a>
 			<?php }
 				else if($storeCode =='en'){ ?>
 				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_en.png'); ?>" width="150px" height="auto" class="logoAg"/>
-				<a href="https://www.guaranteed-reviews.com/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">See the certificate</a>
+				<a href="https://www.guaranteed-reviews.com/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn_en" target="_blank">See the certificate</a>
 			<?php }
 				else if($storeCode =='de'){ ?>
 				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_de.png'); ?>" width="150px" height="auto" class="logoAg"/>
-				<a href="https://www.g-g-b.de/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Siehe das Zertifikat</a>
+				<a href="https://www.g-g-b.de/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn_de" target="_blank">Siehe das Zertifikat</a>
 			<?php }
 				else if($storeCode =='es'){ ?>
 				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_es.png'); ?>" width="150px" height="auto" class="logoAg"/>
-				<a href="https://www.sociedad-de-opiniones-contrastadas.es/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Ver el certificado</a>
+				<a href="https://www.sociedad-de-opiniones-contrastadas.es/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn_es" target="_blank">Ver el certificado</a>
 			<?php }
 				else if($storeCode =='it'){ ?>
 				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_it.png'); ?>" width="150px" height="auto" class="logoAg"/>
-				<a href="https://www.societa-recensioni-garantite.it/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Guarda il certificato</a>
+				<a href="https://www.societa-recensioni-garantite.it/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn_it" target="_blank">Guarda il certificato</a>
 			<?php }
 				else if($storeCode =='nl'){ ?>
 				<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/steavisgarantis_logo_nl.png'); ?>" width="150px" height="auto" class="logoAg"/>
-				<a href="https://www.g-b-n.nl/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn" target="_blank">Zie het certificaat</a>
+				<a href="https://www.g-b-n.nl/<?php echo $finalArr[1]; ?>" class="agBt certificateBtn_nl" target="_blank">Zie het certificaat</a>
 			<?php }?>
 			</div>
 			<div class="statCont">
@@ -168,10 +193,17 @@ echo '</h3><ul class="reviewList">';
 				</div>
 			</div>
 			<div class="reviewCont">
-				<div class="reviewGlobal">
-					<?php $num = round($average*2, 1);?>
-					<div class="largeNote"><big><?php echo $num; ?></big>/10<p><br><?php echo $basedon .' '.$count.' '.$review ?></p></div>
-                </div>
+			<?php $widgettabreview="widget_en";?>
+			<?php $widgettabreview="widget_fr";?>
+			<?php $widgettabreview="widget_de";?>
+			<?php $widgettabreview="widget_es";?>
+			<?php $widgettabreview="widget_it";?>
+			<?php $widgettabreview="widget_nl";?>
+			
+			<div class="reviewGlobal <?php echo $storeCode; ?>">
+				<?php $num = round($average*2, 1);?>
+				<div class="largeNote"><big><?php echo $num; ?></big>/10<p><br><?php echo $basedon .' '.$count.' '.$review ?></p></div>
+            </div>
 			</div>
 			<meta itemprop="ratingValue" content="<?php echo $average; ?>">
 			<meta itemprop="reviewCount" content="<?php echo $count; ?>">
@@ -199,8 +231,8 @@ echo '</h3><ul class="reviewList">';
 						<?php if (!empty($answerTxt)){?>
 						<div class="reponse-review"><span>
 						<p><img src='<?php echo $resposeimage; ?>'></p>
-						<p class="review_merchant">Réponse du marchand</p></span>
-						<p class="merchant_response">
+						<p class="review_merchant_fr">Réponse du marchand</p></span>
+						<p class="merchant_response_fr">
 						
 						<?php echo $answerTxt; ?></p></div>
 						<?php } ?>
@@ -251,15 +283,19 @@ echo '</h3><ul class="reviewList">';
 						
 					<?php }else if ($storeCode == 'de') { ?>
 					<li>
-						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"> 
-						<?php echo $posted_on; echo $posted_date; ?></span></div>
-						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt;?></p></div>
+						<div class="author">
+							<img class="ico_user_de" width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png">
+							<span class="author_name de"><?php echo $name; ?></span>
+							<span class="time de"> 
+							<?php echo $posted_on; echo $posted_date; ?></span>
+						</div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p class="customer_review_de"><?php echo $reviewTxt;?></p></div>
 						
 						<?php if (!empty($answerTxt)){?>
 						<div class="reponse-review"><span>
-						<p><img src='<?php echo $resposeimage; ?>'></p>
-						<p class="review_merchant">Antwort des Händlers</p></span>
-						<p class="merchant_response">
+						<p><img class="ico_user_de" src='<?php echo $resposeimage; ?>'></p>
+						<p class="review_merchant_de">Antwort des Händlers</p></span>
+						<p class="merchant_response_de">
 						
 						<?php echo $answerTxt; ?></p></div>
 						<?php } ?>
@@ -279,15 +315,22 @@ echo '</h3><ul class="reviewList">';
 					</li>
 					<?php }else if ($storeCode == 'it') { ?>
 					<li>
-						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"> 
-						<?php echo $posted_on; echo $posted_date; ?></span></div>
-						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt;?></p></div>
+						<div class="author">
+							<img class="ico_user_it" width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png">
+							<span class="author_name it">
+								<?php echo $name; ?>
+							</span>
+							<span class="time it"> 
+								<?php echo $posted_on; echo $posted_date; ?>
+							</span>
+						</div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p class="customer_review_it" ><?php echo $reviewTxt;?></p></div>
 						
 						<?php if (!empty($answerTxt)){?>
 						<div class="reponse-review"><span>
-						<p><img src='<?php echo $resposeimage; ?>'></p>
-						<p class="review_merchant">Risposta del commerciante</p></span>
-						<p class="merchant_response">
+						<p><img class="ico_user_it" src='<?php echo $resposeimage; ?>'></p>
+						<p class="review_merchant_it">Risposta del commerciante</p></span>
+						<p class="merchant_response_it">
 						
 						<?php echo $answerTxt; ?></p></div>
 						<?php } ?>
@@ -309,7 +352,7 @@ echo '</h3><ul class="reviewList">';
 					<li>
 						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"> 
 						<?php echo $posted_on; echo $posted_date; ?></span></div>
-						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt;?></p></div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p class="customer_review_nl"><?php echo $reviewTxt;?></p></div>
 						
 						<?php if (!empty($answerTxt)){?>
 						<div class="reponse-review"><span>
@@ -336,15 +379,22 @@ echo '</h3><ul class="reviewList">';
 
 				<?php }else if ($storeCode == 'es') { ?>
 					<li>
-						<div class="author"><img width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png"><span class="author_name"><?php echo $name; ?></span><span class="time"> 
-						<?php echo $posted_on; echo $posted_date; ?></span></div>
-						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p><?php echo $reviewTxt;?></p></div>
+						<div class="author">
+							<img class="ico_user_es" width="24px" height="24px" src="https://cms.societe-des-avis-garantis.fr/prestashop/17/modules/steavisgarantis/views/img/ico_user.png">
+							<span class="author_name es">
+								<?php echo $name; ?>
+							</span>
+							<span class="time es"> 
+								<?php echo $posted_on; echo $posted_date; ?>
+							</span>
+						</div>
+						<div class="reviewTxt"><div class="steavisgarantisStar"><span></span><span class="note" style="width:100%"></span></div><span class="metaHide">5</span><p class="customer_review_es"><?php echo $reviewTxt;?></p></div>
 						
 						<?php if (!empty($answerTxt)){?>
 						<div class="reponse-review"><span>
-						<p><img src='<?php echo $resposeimage; ?>'></p>
-						<p class="review_merchant">Respuesta del comerciante</p></span>
-						<p class="merchant_response">
+						<p><img class="ico_user_es" src='<?php echo $resposeimage; ?>'></p>
+						<p class="review_merchant_es">Respuesta del comerciante</p></span>
+						<p class="merchant_response_es">
 						
 						<?php echo $answerTxt; ?></p></div>
 						<?php } ?>

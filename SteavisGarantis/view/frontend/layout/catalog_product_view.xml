@@ -16,7 +16,7 @@
 				</block>
 			</referenceBlock> -->
 			<referenceBlock name="product.info.details">
-				<block class="Magento\Catalog\Block\Product\View" name="custom.tab" template="Mageplaza_SteavisGarantis::custom_tab.phtml" group="detailed_info" >
+				<block class="Magento\Catalog\Block\Product\View" name="custom_tab" template="Mageplaza_SteavisGarantis::custom_tab.phtml" group="detailed_info" >
 					<arguments>
 						<!--<argument translate="true" name="title" xsi:type="string">l'avis du client</argument>-->
 						 <argument name="title" xsi:type="helper" helper="Mageplaza\SteavisGarantis\Helper\Data::getLabel"/>

@@ -44,31 +44,68 @@
 			$basedon = 'Basé sur';
 			$review = 'avis';
 			$view_review = 'VOIR LES AVIS';
+			$classview='view_more';
+			$classave='ave_rate';
 		}
 		else if($storeCode =='en'){ 
 			$basedon = 'Based on' ;
-			$review = 'Reviews';
+			if($count == '1'){
+				$review = 'Review';
+			}
+			else{
+				$review = 'Reviews';
+			}
 			$view_review = 'SEE REVIEWS';
+			$classview='view_more_en';
+			$classave='ave_rate_en';
 		}
 		else if($storeCode =='de'){ 
-			$basedon = 'Beyogen auf';
-			$review = 'Meinung';
-			$view_review = 'BEWERTUNGEN ANSEHEN';
+			$basedon = 'auf';
+			if($count == '1'){
+				$review = 'Bewertung';
+			}
+			else{
+				$review = 'Bewertungen';
+			}
+			$view_review = 'ANZEIGEN';
+			$classview='view_more_de';
+			$classave='ave_rate_de';
 		}
 		else if($storeCode =='es'){ 
 			$basedon = 'Basado en';
-			$review = 'Reseñas';
-			$view_review = 'VER RESEÑAS';
+			if($count == '1'){
+				$review = 'reseña';
+			}
+			else{
+				$review = 'reseñas';
+			}
+			$view_review = 'MOSTRAR MÁS';
+			$classview='view_more_es';
+			$classave='ave_rate_es';
 		}
 		else if($storeCode =='it'){ 
-			$basedon = 'Basato su';
-			$review = 'Recensioni';
-			$view_review = 'VEDI RECENSIONI';
+			$basedon = 'su';
+			if($count == '1'){
+				$review = 'recensione';
+			}
+			else{
+				$review = 'recensioni';
+			}
+			$view_review = 'SAPERNE DI PIÙ';
+			$classview='view_more_it';
+			$classave='ave_rate_it';
 		}
 		else if($storeCode =='nl'){ 
 			$basedon = 'Gebaseerd op';
-			$review = 'Beoordelingen';
-			$view_review = 'BEKIJK BEOORDELINGEN';
+			if($count == '1'){
+				$review = 'Beoordeling';
+			}
+			else{
+				$review = 'Beoordelingen';
+			}
+			$view_review = 'TOON BEOORDELINGEN';
+			$classview='view_more_nl';
+			$classave='ave_rate_nl';
 		}
 		
 		if($helper->isEnablestarrating()) : ?>
@@ -91,7 +128,7 @@
 			<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/sag_logo_badge_it.png'); ?>" />
 		<?php }
 			else if($storeCode =='nl'){ ?>
-			<img src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/sag_logo_badge_nl.png'); ?>" />
+			<img class="img_nl" src="<?php echo $this->getViewFileUrl('Mageplaza_SteavisGarantis::images/sag_logo_badge_nl.png'); ?>" />
 			
 		<?php }?>
 		
@@ -107,7 +144,7 @@
 		//echo $average.'<br>';
 		//echo $sum;
 		
-		echo '<div class="ave_rate"><div class="bh-stars" data-bh-rating=' .$average.'>
+		echo '<div class='.$classave .'><div class="bh-stars" data-bh-rating=' .$average.'>
 							<svg version="1.1" class="bh-star bh-star--1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
 							
 							<svg version="1.1" class="bh-star bh-star--2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
@@ -117,7 +154,7 @@
 							<svg version="1.1" class="bh-star bh-star--4" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
 							
 							<svg version="1.1" class="bh-star bh-star--5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" xml:space="preserve"><path class="outline" d="M12,4.2L14.5,9l0.2,0.5l0.5,0.1l5.5,0.8L16.8,14l-0.4,0.4l0.1,0.5l1,5.3l-5-2.5L12,17.5l-0.4,0.2l-5,2.5L7.5,15l0.1-0.5 L7.2,14l-4-3.7l5.5-0.8l0.5-0.1L9.5,9L12,4.2 M11.9,2L8.6,8.6L1,9.7l5.5,5.1L5.2,22l6.8-3.4l6.8,3.4l-1.3-7.2L23,9.6l-7.6-1L11.9,2 L11.9,2z"/><polygon class="full" points="18.8,22 12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2 15.4,8.6 23,9.6 17.5,14.7"/><polyline class="left-half" points="12,18.6 5.2,22 6.5,14.8 1,9.7 8.6,8.6 11.9,2"/></svg>
-			</div><p>'.$basedon.' '.$count.' '.$review.'</p><a href="#review" class="view_more">'.$view_review.'</a></div>';
+			</div><p>'.$basedon.' '.$count.' '.$review.'</p><a href="#custom_tab" id="review"; class='.$classview.'>'.$view_review.'</a></div>';
 		
 		endif; ?>
 		
@@ -134,3 +171,20 @@
     <?php// endif; ?>
 </div>
 </div>
+<script>
+jQuery("#review").click(function(){  
+  jQuery("#description").hide();
+  jQuery("#custom_tab").show();
+  
+  jQuery("#tab-label-description").removeClass("active");
+  jQuery("#tab-label-custom_tab").addClass("active");
+  
+  jQuery("#tab-label-description").attr("aria-selected","false");
+  jQuery("#tab-label-description").attr("aria-expanded","false");
+  
+  jQuery("#tab-label-custom_tab").attr("aria-selected","true");
+  jQuery("#tab-label-custom_tab").attr("aria-expanded","true");
+  
+  jQuery("#custom_tab").attr("aria-hidden","false");  
+});
+</script>
